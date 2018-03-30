@@ -21,18 +21,10 @@
                     NSLog(@"nickName=%@", [result propertyForKey:@"nickname"]);
                     NSLog(@"profileImage=%@", [result propertyForKey:@"profile_image"]);
                     
-                    if (result.email) {
-                        NSLog(@"email=%@", result.email);
-                    } else {
-                        NSLog(@"email disagreed..");
-                    }
-
                     NSDictionary *userSession = @{
                                           @"id": result.ID,
                                           @"nickname": [result propertyForKey:@"nickname"],
-                                          @"profile_image": [result propertyForKey:@"profile_image"],
-                                          @"email": [result propertyForKey:@"email"]
-                                          };
+                                          @"profile_image": [result propertyForKey:@"profile_image"]};
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:userSession];
                 } else {
                     // failed
