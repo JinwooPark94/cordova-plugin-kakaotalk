@@ -1,20 +1,18 @@
 /**
-* Copyright 2015 Kakao Corp.
-*
-* Redistribution and modification in source or binary forms are not permitted without specific prior written permission.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2015-2016 Kakao Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /*!
  @header KOSession.h
@@ -77,12 +75,14 @@ typedef NS_ENUM(NSInteger, KOAgeAuthLevel) {
  @abstract KOAgeAuthLimit 연령인증 시 인증 나이.
  @constant KOAgeAuthLimitType12 12세 인증.
  @constant KOAgeAuthLimitType15 15세 인증.
+ @constant KOAgeAuthLimitType18 18세 인증.
  @constant KOAgeAuthLimitType19 19세 인증.
  */
 typedef NS_ENUM(NSInteger, KOAgeAuthLimit) {
     KOAgeAuthLimitTypeNone = 0,
     KOAgeAuthLimitType12 = 12,
     KOAgeAuthLimitType15 = 15,
+    KOAgeAuthLimitType18 = 18,
     KOAgeAuthLimitType19 = 19
 };
 
@@ -123,10 +123,20 @@ typedef NS_ENUM(NSInteger, KOAgeAuthProperty) {
  */
 @property(nonatomic, readonly, copy) NSString *refreshToken;
 /*!
+ * @property expiresAccessTokenTime
+ * @abstract accessToken이 만료되는 시각.
+ */
+@property(nonatomic, readonly, copy) NSDate *expiresAccessTokenTime;
+/*!
  * @property state
  * @abstract 인증 상태
  */
 @property(nonatomic, readonly) KOSessionState state;
+/*!
+ * @property clientSecret
+ * @abstract 클라이언트 시크릿. AppDelegate의 application:didFinishLaunchingWithOptions: 메소드에서 값을 설정해주어야 한다.
+ */
+@property(nonatomic, copy) NSString *clientSecret;
 
 /*!
  * @property automaticPeriodicRefresh
@@ -140,10 +150,11 @@ typedef NS_ENUM(NSInteger, KOAgeAuthProperty) {
  */
 @property (nonatomic, weak) UIViewController *presentingViewController;
 
-@property (nonatomic, assign) UIBarStyle presentedViewBarStyle;
-@property (nonatomic, assign, getter=isPresentedViewBarTranslucent) BOOL presentedViewBarTranslucent;
+@property (nonatomic, assign) UIStatusBarStyle presentedViewStatusBarStyle;
+@property (nonatomic, strong) UIColor *presentedViewBarTitleColor;
 @property (nonatomic, strong) UIColor *presentedViewBarTintColor;
 @property (nonatomic, strong) UIColor *presentedViewBarButtonTintColor;
+@property (nonatomic, strong) UIImage *presentedViewBarBackgroundImage;
 
 
 /*!
@@ -179,7 +190,6 @@ typedef NS_ENUM(NSInteger, KOAgeAuthProperty) {
 /*!
  url에 포함된 code 정보로 oauth 인증 토큰을 요청한다. 인증 토큰 요청이 완료되면 completionHandler를 실행한다.
  @param url 인증 요청 code 또는 오류 정보(error, error_description)를 담은 url
- @param completionHandler 요청 완료시 실행될 block. 오류 처리와 인증 완료 작업을 수행한다.
  */
 + (BOOL)handleOpenURL:(NSURL *)url;
 
@@ -202,25 +212,16 @@ typedef NS_ENUM(NSInteger, KOAgeAuthProperty) {
 /*!
  기기의 로그인 수행 가능한 카카오 앱에 로그인 요청을 전달한다.
  @param completionHandler 요청 완료시 실행될 block. 오류 처리와 로그인 완료 작업을 수행한다.
- @param authParams 로그인 요청시의 인증에 필요한 부가적인 파라미터들을 전달한다.
- */
-- (void)openWithCompletionHandler:(KOSessionCompletionHandler)completionHandler authParams:(NSDictionary *)authParams;
-
-/*!
- 기기의 로그인 수행 가능한 카카오 앱에 로그인 요청을 전달한다.
- @param completionHandler 요청 완료시 실행될 block. 오류 처리와 로그인 완료 작업을 수행한다.
- @param authParams 로그인 요청시의 인증에 필요한 부가적인 파라미터들을 전달한다.
  @param authType 로그인 요청시의 인증 타입(KOAuthType)의 array(var arguments로서 nil-terminated list). 주의) list의 마지막은 꼭 nil로 끝나야함. 예) KOAuthTypeTalk, KOAuthTypeStory, KOAuthTypeAccount, nil
  */
-- (void)openWithCompletionHandler:(KOSessionCompletionHandler)completionHandler authParams:(NSDictionary *)authParams authType:(KOAuthType)authType, ...;
+- (void)openWithCompletionHandler:(KOSessionCompletionHandler)completionHandler authType:(KOAuthType)authType, ...;
 
 /*!
  기기의 로그인 수행 가능한 카카오 앱에 로그인 요청을 전달한다.
  @param completionHandler 요청 완료시 실행될 block. 오류 처리와 로그인 완료 작업을 수행한다.
- @param authParams 로그인 요청시의 인증에 필요한 부가적인 파라미터들을 전달한다.
  @param authTypes 로그인 요청시의 인증 타입(KOAuthType)의 array.
  */
-- (void)openWithCompletionHandler:(KOSessionCompletionHandler)completionHandler authParams:(NSDictionary *)authParams authTypes:(NSArray *)authTypes;
+- (void)openWithCompletionHandler:(KOSessionCompletionHandler)completionHandler authTypes:(NSArray<NSNumber *> *)authTypes;
 
 /*!
  현재 기기에서만 로그아웃한다.
@@ -237,6 +238,12 @@ typedef NS_ENUM(NSInteger, KOAgeAuthProperty) {
  인증되어 있는지 여부.
  */
 - (BOOL)isOpen;
+
+/*!
+ access token을 갱신한다.
+ @param completionHandler 갱신 완료시 실행될 block.
+ */
+- (void)refreshAccessTokenWithCompletionHandler:(KOSessionCompletionHandler)completionHandler;
 
 /*!
  새로운 연령 인증이 필요할 경우 사용자에게 연령 인증관련 창을 띄워서 연령 인증을 유도합니다. 제휴를 통해 권한이 부여된 특정 앱에서만 호출 가능합니다.
