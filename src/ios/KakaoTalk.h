@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <Cordova/CDVPlugin.h>
+#import "AppDelegate.h"
 
 @interface KakaoTalk : CDVPlugin
 

@@ -186,3 +186,14 @@
 
 @end
 
+@implementation AppDelegate (CDVAppDelegate)
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    if ([KOSession isKakaoAccountLoginCallback:url]){return [KOSession handleOpenURL:url];}
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application{[KOSession handleDidBecomeActive];}
+
+@end
