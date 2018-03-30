@@ -309,7 +309,7 @@ public class KakaoTalk extends CordovaPlugin {
                 public void onNotSignedUp() {
                     callbackContext.error("this user is not signed up");
                 }
-            }, propertyKeys, false););
+            }, propertyKeys, false));
         }
 
         @Override
