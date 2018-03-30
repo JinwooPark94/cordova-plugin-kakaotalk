@@ -4,44 +4,81 @@
 
 @implementation KakaoTalk
 
-- (void) login:(CDVInvokedUrlCommand*) command
-{
-    [[KOSession sharedSession] close];
+// - (void) login:(CDVInvokedUrlCommand*) command
+// {
+//     [[KOSession sharedSession] close];
     
-    [[KOSession sharedSession] openWithCompletionHandler:^(NSError *error) {
+//     [[KOSession sharedSession] openWithCompletionHandler:^(NSError *error) {
         
-        if ([[KOSession sharedSession] isOpen]) {
-            // login success
-            NSLog(@"login succeeded.");
-            [KOSessionTask meTaskWithCompletionHandler:^(KOUser* result, NSError *error) {
-                CDVPluginResult* pluginResult = nil;
-                if (result) {
-                    // success
-                    NSLog(@"userId=%@", result.ID);
-                    NSLog(@"nickName=%@", [result propertyForKey:@"nickname"]);
-                    NSLog(@"profileImage=%@", [result propertyForKey:@"profile_image"]);
+//         if ([[KOSession sharedSession] isOpen]) {
+//             // login success
+//             NSLog(@"login succeeded.");
+//             [KOSessionTask meTaskWithCompletionHandler:^(KOUser* result, NSError *error) {
+//                 CDVPluginResult* pluginResult = nil;
+//                 if (result) {
+//                     // success
+//                     NSLog(@"userId=%@", result.ID);
+//                     NSLog(@"nickName=%@", [result propertyForKey:@"nickname"]);
+//                     NSLog(@"profileImage=%@", [result propertyForKey:@"profile_image"]);
                     
-                    NSDictionary *userSession = @{
-                                          @"id": result.ID,
-                                          @"nickname": [result propertyForKey:@"nickname"],
-                                          @"profile_image": [result propertyForKey:@"profile_image"]};
-                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:userSession];
-                } else {
-                    // failed
-                    NSLog(@"login session failed.");
-                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
-                }
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            }];
+//                     NSDictionary *userSession = @{
+//                                           @"id": result.ID,
+//                                           @"nickname": [result propertyForKey:@"nickname"],
+//                                           @"profile_image": [result propertyForKey:@"profile_image"]};
+//                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:userSession];
+//                 } else {
+//                     // failed
+//                     NSLog(@"login session failed.");
+//                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+//                 }
+//                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+//             }];
+//         } else {
+//             // failed
+//             NSLog(@"login failed.");
+//             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+//             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+//         }
+        
+        
+//     } authParams:nil authType:(KOAuthType)KOAuthTypeTalk, nil];
+// }
+
+- (void)login:(CDVInvokedUrlCommand*)command
+{
+  [[KOSession sharedSession] close];
+
+  [[KOSession sharedSession] openWithCompletionHandler:^(NSError *error) {
+    if ([[KOSession sharedSession] isOpen]) {
+      // 로그인 성공
+      // 사용자 정보 요청
+      [KOSessionTask meTaskWithCompletionHandler:^(KOUser* result, NSError *error) {
+        CDVPluginResult* pluginResult = nil;
+        if (result) {
+          // 사용자 정보 요청 성공
+          if (result.email) {
+            NSLog(@"email=%@", result.email);
+          } else {
+            // disagreed
+          }
+          // 리턴
+          NSDictionary *userSession = @{
+            @"id": result.ID,
+            @"nickname": [result propertyForKey:KOUserNicknamePropertyKey],
+          };
+          pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:userSession];
         } else {
-            // failed
-            NSLog(@"login failed.");
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+          // 사용자 정보 요청 실패
+          pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
         }
-        
-        
-    } authParams:nil authType:(KOAuthType)KOAuthTypeTalk, nil];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+      }];
+    } else {
+      // 로그인 실패
+      CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+      [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+  } authType: (KOAuthType)KOAuthTypeTalk, nil];
 }
 
 - (void)logout:(CDVInvokedUrlCommand*)command
