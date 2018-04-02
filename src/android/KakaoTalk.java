@@ -69,8 +69,8 @@ public class KakaoTalk extends CordovaPlugin {
         Session.getCurrentSession().addCallback(callback);
 
         if (action.equals("login")) {
-            // this.login();
-            this.getAccessToken(callbackContext);
+            this.login();
+            // this.getAccessToken(callbackContext);
             //requestMe(callbackContext);
             return true;
         } else if (action.equals("logout")) {
@@ -302,7 +302,8 @@ public class KakaoTalk extends CordovaPlugin {
 
                 @Override
                 public void onSuccess(UserProfile userProfile) {
-                    callbackContext.success(handleResult(userProfile));
+                    // callbackContext.success(handleResult(userProfile));
+                    this.getAccessToken(callbackContext);
                 }
 
                 @Override
