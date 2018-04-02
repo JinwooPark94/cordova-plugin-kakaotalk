@@ -229,6 +229,7 @@ public class KakaoTalk extends CordovaPlugin {
      * 액세스 토큰을 가져온다
      */
     private void getAccessToken(CallbackContext callbackContext) {
+        // this.login();
         String accessToken = Session.getCurrentSession().getTokenInfo().getAccessToken();
         callbackContext.success(accessToken);
     }
@@ -303,7 +304,7 @@ public class KakaoTalk extends CordovaPlugin {
                 @Override
                 public void onSuccess(UserProfile userProfile) {
                     // callbackContext.success(handleResult(userProfile));
-                    this.getAccessToken(callbackContext);
+                    getAccessToken(callbackContext);
                 }
 
                 @Override
