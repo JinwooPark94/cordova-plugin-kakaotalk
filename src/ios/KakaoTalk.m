@@ -1,6 +1,8 @@
 #import "KakaoTalk.h"
 #import <Cordova/CDVPlugin.h>
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
+#import <KakaoLink/KakaoLink.h>
+#import <KakaoMessageTemplate/KakaoMessageTemplate.h>
 
 @implementation KakaoTalk
 
@@ -26,7 +28,7 @@
     KMTTemplate *template = [KMTFeedTemplate feedTemplateWithBuilderBlock:^(KMTFeedTemplateBuilder * _Nonnull feedTemplateBuilder) {
         
         NSMutableDictionary *options = [[command.arguments lastObject] mutableCopy];
-        
+
         NSString* params = options[@"params"];
         if(params) {
             NSLog(@"params=%@", params);
@@ -85,6 +87,12 @@
             }]];
         }
     
+    }];    
+    
+    [[KLKTalkLinkCenter sharedCenter] sendDefaultWithTemplate:template success:^(NSDictionary<NSString *,NSString *> * _Nullable warningMsg, NSDictionary<NSString *,NSString *> * _Nullable argumentMsg) {
+        // 성공
+    } failure:^(NSError * _Nonnull error) {
+        // 에러
     }];
 }
 
