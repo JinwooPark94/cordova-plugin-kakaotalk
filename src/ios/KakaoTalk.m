@@ -66,8 +66,9 @@
 
             NSDictionary *weblinkDic = [weblink copy];;
             NSString* url = weblinkDic[@"url"];
+            NSString* text = weblinkDic[@"text"];
             [feedTemplateBuilder addButton:[KMTButtonObject buttonObjectWithBuilderBlock:^(KMTButtonBuilder * _Nonnull buttonBuilder) {
-                buttonBuilder.title = @"웹으로 이동";
+                buttonBuilder.title = text;
                 buttonBuilder.link = [KMTLinkObject linkObjectWithBuilderBlock:^(KMTLinkBuilder * _Nonnull linkBuilder) {
                     linkBuilder.mobileWebURL = [NSURL URLWithString: url];
                 }];
@@ -78,8 +79,10 @@
         if(applink) {
             NSLog(@"applink=%@", applink);
             
+            NSDictionary *applinkDic = [applink copy];
+            NSString* text = applinkDic[@"text"];
             [feedTemplateBuilder addButton:[KMTButtonObject buttonObjectWithBuilderBlock:^(KMTButtonBuilder * _Nonnull buttonBuilder) {
-                buttonBuilder.title = @"앱으로 이동";
+                buttonBuilder.title = text;
                 buttonBuilder.link = [KMTLinkObject linkObjectWithBuilderBlock:^(KMTLinkBuilder * _Nonnull linkBuilder) {
                     linkBuilder.iosExecutionParams = @"param1=value1&param2=value2";
                     linkBuilder.androidExecutionParams = @"param1=value1&param2=value2";

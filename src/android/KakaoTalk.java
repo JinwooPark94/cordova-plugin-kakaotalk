@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.message.template.*;
+import com.kakao.network.callback.*;
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.IApplicationConfig;
@@ -13,10 +17,6 @@ import com.kakao.auth.ISessionConfig;
 import com.kakao.auth.KakaoAdapter;
 import com.kakao.auth.KakaoSDK;
 import com.kakao.auth.Session;
-import com.kakao.kakaolink.AppActionBuilder;
-import com.kakao.kakaolink.AppActionInfoBuilder;
-import com.kakao.kakaolink.KakaoLink;
-import com.kakao.kakaolink.KakaoTalkLinkMessageBuilder;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
@@ -29,7 +29,6 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,101 +94,68 @@ public class KakaoTalk extends CordovaPlugin {
     private void share(JSONArray options, final CallbackContext callbackContext) throws KakaoParameterException {
 
         try {
+
             final JSONObject parameters = options.getJSONObject(0);
+            String webLinkText = "";
+            String webLinkUrl = "";
+            String appLinkText = "";
+            String appLinkUrl = "";
+            String paramsTitle = "";
+            String paramsDesc= "";
+            String paramsImageUrl = "";
+            String paramsLink = "";
 
-            final Activity activity = this.cordova.getActivity();
-            final KakaoLink kakaoLink = KakaoLink.getKakaoLink(activity);
-            final KakaoTalkLinkMessageBuilder kakaoTalkLinkMessageBuilder = kakaoLink.createKakaoTalkLinkMessageBuilder();
-            cordova.getThreadPool().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (parameters.has("text")) {
-                            kakaoTalkLinkMessageBuilder.addText(parameters.getString("text"));
-                        }
-                        if (parameters.has("image")) {
-                            JSONObject imageObj = parameters.getJSONObject("image");
-                            Integer imageWidth = 80;
-                            Integer imageHeight = 80;
-                            if (imageObj.has("width") && Integer.parseInt(imageObj.getString("width")) > 80) {
-                                imageWidth = Integer.parseInt(imageObj.getString("width"));
-                            }
-                            ;
-                            if (imageObj.has("height") && Integer.parseInt(imageObj.getString("height")) > 80) {
-                                imageHeight = Integer.parseInt(imageObj.getString("height"));
-                            }
-                            ;
-                            kakaoTalkLinkMessageBuilder.addImage(imageObj.getString("src"), imageWidth, imageHeight);
-                        }
-                        if (parameters.has("weblink")) {
-                            JSONObject weblinkObj = parameters.getJSONObject("weblink");
-                            if (weblinkObj.has("text") && weblinkObj.has("url")) {
-                                kakaoTalkLinkMessageBuilder.addWebLink(weblinkObj.getString("text"), weblinkObj.getString("url"));
-                            }
-                        }
-                        if (parameters.has("applink")) {
-                            JSONObject applinkObj = parameters.getJSONObject("applink");
-                            if (applinkObj.has("text") && applinkObj.has("url")) {
-                                String applinkParam = "";
-                                if (parameters.has("params")) {
-                                    JSONObject paramsObj = parameters.getJSONObject("params");
-                                    Log.v(LOG_TAG, "paramsObj : " + paramsObj);
-                                    Iterator keys = paramsObj.keys();
-                                    int i = 0;
-                                    while (keys.hasNext()) {
-                                        String key = keys.next().toString();
-                                        String paramValue = paramsObj.getString(key);
-                                        Log.v(LOG_TAG, "key : " + key);
-                                        Log.v(LOG_TAG, "paramValue : " + paramValue);
-                                        if (paramValue != "") {
-                                            i++;
-                                            if (i > 1) {
-                                                key = "&" + key;
-                                            }
-                                            applinkParam = applinkParam + key + "=" + paramValue;
-                                        }
-                                    }
-                                    ;
-                                }
-                                Log.v(LOG_TAG, "applinkParam : " + applinkParam);
-                                kakaoTalkLinkMessageBuilder.addAppButton(applinkObj.getString("text"),
-                                        new AppActionBuilder()
-                                                .addActionInfo(AppActionInfoBuilder
-                                                        .createAndroidActionInfoBuilder()
-                                                        .setExecuteParam(applinkParam)
-                                                        .setMarketParam("referrer=kakaotalklink")
-                                                        .build())
-                                                .addActionInfo(AppActionInfoBuilder
-                                                        .createiOSActionInfoBuilder()
-                                                        .setExecuteParam(applinkParam)
-                                                        .build())
-                                                .setUrl(applinkObj.getString("url"))
-                                                .build());
-                            }
-                        }
-                        ;
-                        kakaoTalkLinkMessageBuilder.build();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Exception error : " + e));
-                        callbackContext.error("Exception error : " + e);
-                    }
+            if (parameters.has("text")) {
+                // TODO: 
+            }
 
-                    try {
-                        kakaoLink.sendMessage(kakaoTalkLinkMessageBuilder, activity);
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, "success"));
-                        callbackContext.success("success");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Exception error : " + e));
-                        callbackContext.error("Exception error : " + e);
-                    }
+            if (parameters.has("params")) {
+                JSONObject paramsObj = parameters.getJSONObject("params");
+                if(paramsObj.has("title") && paramsObj.has("desc") && paramsObj.has("imageUrl") && paramsObj.has("link")) {
+                    paramsTitle = paramsObj.getString("title");
+                    paramsDesc = paramsObj.getString("desc");
+                    paramsImageUrl = paramsObj.getString("imageUrl");
+                    paramsLink = paramsObj.getString("link");
                 }
-            });
+            }
+
+            if (parameters.has("weblink")) {
+                JSONObject weblinkObj = parameters.getJSONObject("weblink");
+                if(weblinkObj.has("text") && weblinkObj.has("url")) {
+                    webLinkText = weblinkObj.getString("text");
+                    webLinkUrl = weblinkObj.getString("url");
+                }
+            }
+
+            if (parameters.has("applink")) {
+                JSONObject applinkObj = parameters.getJSONObject("applink");
+                if(applinkObj.has("text") && applinkObj.has("url")) {
+                    appLinkText = applinkObj.getString("text");
+                    appLinkUrl = applinkObj.getString("url");
+                }
+            }
+
+            FeedTemplate params = FeedTemplate.newBuilder(ContentObject
+                    .newBuilder(paramsTitle, paramsImageUrl, LinkObject.newBuilder().setWebUrl(paramsLink).setMobileWebUrl(paramsLink).build())
+                    .setDescrption(paramsDesc).build())
+                    .addButton(new ButtonObject(webLinkText, LinkObject.newBuilder().setWebUrl(webLinkUrl).setMobileWebUrl(webLinkUrl).build()))
+                    .addButton(new ButtonObject(appLinkText, LinkObject.newBuilder().setWebUrl(appLinkUrl).setMobileWebUrl(appLinkUrl).setAndroidExecutionParams("key1=value1").setIosExecutionParams("key1=value1").build()))
+                    .build();
+
+            KakaoLinkService.getInstance().sendDefault(getCurrentActivity(), params, new ResponseCallback<KakaoLinkResponse>() {
+                @Override
+                public void onFailure(ErrorResult errorResult) {
+                    Log.v(LOG_TAG, "kakao link : error - " + errorResult.toString());
+                }
+
+                @Override
+                public void onSuccess(KakaoLinkResponse result) {
+                    Log.v(LOG_TAG, "kakao link : onSuccess - " + result.toString());
+                }
+            });            
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 
