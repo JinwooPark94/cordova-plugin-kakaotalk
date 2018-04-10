@@ -180,7 +180,7 @@ public class KakaoTalk extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                UserManagement.requestLogout(new LogoutResponseCallback() {
+                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                     @Override
                     public void onCompleteLogout() {
                         Log.v(LOG_TAG, "kakao : onCompleteLogout");
@@ -255,7 +255,7 @@ public class KakaoTalk extends CordovaPlugin {
             // propertyKeys.add("nickname");
             // propertyKeys.add("profile_image");
             // propertyKeys.add("thumbnail_image");
-            UserManagement.requestMe(new MeResponseCallback() {
+            UserManagement.getInstance().requestMe(new MeResponseCallback() {
                 @Override
                 public void onFailure(ErrorResult errorResult) {
                     callbackContext.error("kakao : SessionCallback.onSessionOpened.requestMe.onFailure - " + errorResult);
