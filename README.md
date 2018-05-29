@@ -15,7 +15,7 @@ Cordova Plugin KakaoTalk
 
 - 최신 카카오링크 사용이 가능합니다.
 - 사용하기 위해서는 ios용 최신 sdk를 다운받고(https://developers.kakao.com/docs/sdk) 추가해줘야합니다.
-
+- KakaoLink.framework, KakaoMessageTemplate.framework 을 추가합니다.
 
 설치 방법
 ========================
