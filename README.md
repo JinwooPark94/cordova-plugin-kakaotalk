@@ -40,7 +40,7 @@ cordova plugin add https://github.com/leeduyoung/cordova-plugin-kakaotalk.git --
 
 * 사용법은 아래 v2  동일합니다.
 
-## Ionic Plugin v2 설치
+## Ionic Plugin v2+ 설치
 Ionic에서 사용하기 위해서는 Cordova 플러그인을 앞서 설치해야합니다.
 
 Ionic 카카오톡 플러그인 설치
