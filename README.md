@@ -24,7 +24,7 @@ Cordova Plugin KakaoTalk
 
 플러그인 추가
 ```
-cordova plugin add cordova-plugin-ghyeok-kakaotalk --variable KAKAO_APP_KEY=YOUR_KAKAO_APP_KEY
+cordova plugin add https://github.com/leeduyoung/cordova-plugin-kakaotalk.git --variable KAKAO_APP_KEY=YOUR_KAKAO_APP_KEY
 ```
 
 안드로이드
