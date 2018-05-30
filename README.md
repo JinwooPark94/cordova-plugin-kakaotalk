@@ -1,7 +1,7 @@
 Cordova Plugin KakaoTalk
 ========================
 
-### ionic2 에서 사용할 수 있습니다.
+### ionic1, ionic2+ 에서 사용할 수 있습니다.
 
 이 Cordova 플러그인은 taejaehan의 Cordova-Kakaotalk-Plugin를 수정하였습니다.
 
@@ -11,11 +11,9 @@ Cordova Plugin KakaoTalk
 
 - [https://developers.kakao.com](https://developers.kakao.com)
 
-## 변경사항
+## 추가사항
 
-- 최신 카카오링크 사용이 가능합니다.
-- 사용하기 위해서는 ios용 최신 sdk를 다운받고(https://developers.kakao.com/docs/sdk) 추가해줘야합니다.
-- KakaoLink.framework, KakaoCommon.framework, KakaoMessageTemplate.framework 프로젝트 -> Frameworks drag & drop 하여 추가합니다.
+- 최신버전의 카카오링크 사용이 가능합니다.
 
 설치 방법
 ========================
@@ -32,30 +30,17 @@ cordova plugin add https://github.com/leeduyoung/cordova-plugin-kakaotalk.git --
 * 카카오 개발자 센터에서 키 해시를 등록해야 합니다 (https://developers.kakao.com/docs/android#getting-started-launch-sample-app)
 
 아이폰
+ 
+* 카카오링크 v2를 사용하기 위해서는 ios용 최신 sdk를 다운받고(https://developers.kakao.com/docs/sdk) 추가해줘야합니다.
+* KakaoLink.framework, KakaoCommon.framework, KakaoMessageTemplate.framework 프로젝트 -> Frameworks drag & drop 하여 추가합니다.
 
-* 아래의 코드를 appDelegate에 추가 해야합니다.
+## Ionic Plugin v1 설치
 
-```
-#import <KakaoOpenSDK/KakaoOpenSDK.h>
+* cordova 플러그인만 추가하면 됩니다. (위 내용 참조)
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-                                       sourceApplication:(NSString *)sourceApplication
-                                              annotation:(id)annotation {
-    ...
-    if ([KOSession isKakaoAccountLoginCallback:url]){return [KOSession handleOpenURL:url];}
-    ...
-}
+* 사용법은 아래 v2  동일합니다.
 
-- (void)applicationDidBecomeActive:(UIApplication *)application{[KOSession handleDidBecomeActive];}
-```
-
-* Ohter Linker Flags 추가
-
-open platforms/ios/*.xcodeproj
-        Build Settings > Linking > Other Linker Flags > add '-all_load'
-
-
-## Ionic Plugin 설치
+## Ionic Plugin v2 설치
 Ionic에서 사용하기 위해서는 Cordova 플러그인을 앞서 설치해야합니다.
 
 Ionic 카카오톡 플러그인 설치
