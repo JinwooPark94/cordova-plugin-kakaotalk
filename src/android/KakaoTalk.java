@@ -28,7 +28,6 @@ import com.kakao.util.exception.KakaoException;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,11 +44,10 @@ public class KakaoTalk extends CordovaPlugin {
      * Initialize cordova plugin kakaotalk
      *
      * @param cordova
-     * @param webView
      */
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+    public void initialize(CordovaInterface cordova) {
         Log.v(LOG_TAG, "kakao : initialize");
-        super.initialize(cordova, webView);
+        super.initialize(cordova);
         currentActivity = this.cordova.getActivity();
         KakaoSDK.init(new KakaoSDKAdapter());
     }
@@ -315,11 +313,6 @@ public class KakaoTalk extends CordovaPlugin {
                 @Override
                 public AuthType[] getAuthTypes() {
                     return new AuthType[]{AuthType.KAKAO_LOGIN_ALL};
-                }
-
-                @Override
-                public boolean isUsingWebviewTimer() {
-                    return false;
                 }
 
                 @Override
